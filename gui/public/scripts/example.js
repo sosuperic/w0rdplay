@@ -73,6 +73,9 @@ var CommentBox = React.createClass({
     this.loadCommentsFromServer();
     setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },
+  updateComments: function(data) {
+    this.setState({data: data});
+  },
   render: function() {
     return (
       <div className="commentBox">
@@ -82,11 +85,15 @@ var CommentBox = React.createClass({
         </div>
         <div>
           <div className="commentList">
-            <CommentList data={this.state.data} />
+            <CommentList
+              data={this.state.data}
+              ref="commentList" />
           </div>
           <div className="candidateBox">
             <h6 className="speechblocks_title">speechblocks words</h6>
-            <CandidateBox url="/api/speechblocks/get_words" />
+            <CandidateBox
+              url="/api/speechblocks/get_words"
+              updateComments={this.updateComments} />
           </div>
         </div>
       </div>
@@ -124,7 +131,8 @@ var CandidateBox = React.createClass({
           <CandidateList
             data={this.state.data}
             url={'api/submit_speechblocks_word'}
-            updateState={this.updateState} />
+            updateState={this.updateState}
+            updateComments={this.props.updateComments} />
         </div>
       </div>
     );
@@ -140,7 +148,7 @@ var CandidateList = React.createClass({
       data: {'i': i, 'id': props.data[i].id, 'text': props.data[i].text},
       success: function(data) {
         this.props.updateState(data['speechblocks_words']);
-        // TODO: connect to CommentList and call setState with data['session_words']
+        this.props.updateComments(data['session_words']);
       }.bind(this),
       error: function(xhr, status, err) {
         this.setState({data: comments});
