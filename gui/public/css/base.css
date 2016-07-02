@@ -85,7 +85,7 @@ input:focus {
 }
 
 .comment {
-  font-size:14px;
+  font-size: 14px;
   line-height: 0.0;
 }
 
@@ -94,6 +94,14 @@ input:focus {
 }
 
 .candidate {
-  font-size:14px;
+  font-size: 14px;
   line-height: 0.5;
+}
+
+.candidate:hover {
+  cursor: pointer;
+}
+
+.speechblocks_title {
+  margin: 10px;
 }

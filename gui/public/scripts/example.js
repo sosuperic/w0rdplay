@@ -58,7 +58,6 @@ var CommentBox = React.createClass({
       type: 'POST',
       data: comment,
       success: function(data) {
-        console.log(data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
@@ -82,11 +81,12 @@ var CommentBox = React.createClass({
           <CommentForm url="/api/analyze_word/" onCommentSubmit={this.handleCommentSubmit} />
         </div>
         <div>
-          <div>
-            <CommentList className="commentList" data={this.state.data} />
+          <div className="commentList">
+            <CommentList data={this.state.data} />
           </div>
-          <div>
-            <CandidateBox className="candidateBox" url="/api/speechblocks/get_words" />
+          <div className="candidateBox">
+            <h6 className="speechblocks_title">speechblocks words</h6>
+            <CandidateBox url="/api/speechblocks/get_words" />
           </div>
         </div>
       </div>
@@ -114,11 +114,17 @@ var CandidateBox = React.createClass({
   componentDidMount: function() {
     this.loadCandidatesFromServer();
   },
+  updateState: function(data) {
+    this.setState({data: data});
+  },
   render: function() {
     return (
       <div className="candidateBox">
         <div>
-          <CandidateList data={this.state.data} />
+          <CandidateList
+            data={this.state.data}
+            url={'api/submit_speechblocks_word'}
+            updateState={this.updateState} />
         </div>
       </div>
     );
@@ -126,18 +132,31 @@ var CandidateBox = React.createClass({
 });
 
 var CandidateList = React.createClass({
-  // handleCandidateClick: function() {
-  //   console.log('hi');
-  //   // TODO: make an ajax call, classify and add to words, retrieve new word
-  // },
+  handleClick: function(i, props) {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: {'i': i, 'id': props.data[i].id, 'text': props.data[i].text},
+      success: function(data) {
+        this.props.updateState(data['speechblocks_words']);
+        // TODO: connect to CommentList and call setState with data['session_words']
+      }.bind(this),
+      error: function(xhr, status, err) {
+        this.setState({data: comments});
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
   render: function() {
-    var candidateNodes = this.props.data.map(function(candidate) {
+    var dis = this;
+    var candidateNodes = this.props.data.map(function(candidate, i) {
+      var boundClick = dis.handleClick.bind(dis, i, dis.props);
       return (
         <Candidate
           key={candidate.id}
-          // onCClick={this.handleCandidateClick}
-        >
-          {candidate.word}
+          onClick={boundClick} >
+          {candidate.text}
         </Candidate>
       );
     });
@@ -155,16 +174,12 @@ var Candidate = React.createClass({
     var rawMarkup = md.render(this.props.children.toString());
     return { __html: rawMarkup };
   },
-  // handleClick: function(e) {
-  //   console.log('hi');
-  //   console.log(e);
-  // },
   render: function() {
     return (
       <div className="candidate">
         <span
           dangerouslySetInnerHTML={this.rawMarkup()}
-          // onClick={this.props.onCClick}
+          onClick={this.props.onClick}
         />
       </div>
     );
