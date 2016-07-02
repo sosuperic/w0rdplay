@@ -57,6 +57,7 @@ class GarbageDetector:
 		self.good_words_path = GOOD_WORDS_PATH
 		self.garbage_words_path = GARBAGE_WORDS_PATH
 		self.probs = self.calc_bigram_probs()
+		self.train()
 
 	def calc_bigram_probs(self):
 		"""
@@ -91,7 +92,7 @@ class GarbageDetector:
 		"""
 		Return probability of string
 		"""
-		if len(s) == 1:
+		if len(s) <= 1:
 			return 1.0 / 26
 
 		log_prob = 0.0
@@ -127,7 +128,6 @@ class GarbageDetector:
 
 if __name__ == '__main__':
 	gd = GarbageDetector()
-	gd.train()
 	while True:
 		s = raw_input()
 		print gd.is_good(s)
