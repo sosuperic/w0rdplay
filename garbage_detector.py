@@ -103,28 +103,6 @@ class GarbageDetector:
 
 		return prob
 
-	def calc_perm_probs(self):
-		"""
-		Calculate the log prob for all permutations of letters up to length n
-		"""
-		n = 5
-
-		perm_probs = defaultdict(dict)
-
-		csv = open('perm_probs.csv', 'wb')
-
-		for i in range(2, n+1):
-			for p in product(ascii_lowercase, repeat=i):
-				s = ''.join(p)
-				prob = calc_prob(s)
-				perm_probs[i][s] = prob
-				csv.write('{},{:.6f}\n'.format(s, prob))
-		csv.close()
-
-		f = open('perm_probs.pkl', 'wb')
-		pickle.dump(perm_probs, f, protocol=2)
-		f.close()
-
 	def train(self):
 		"""
 		Calculate the threshold between good and garbage words
