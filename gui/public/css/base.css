@@ -51,7 +51,7 @@ h4 {
 }
 
 p, ul {
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 ul {
@@ -86,7 +86,7 @@ input:focus {
 
 .comment {
   font-size:14px;
-  line-height: 0.2;
+  line-height: 0.0;
 }
 
 .candidateBox {
@@ -95,5 +95,5 @@ input:focus {
 
 .candidate {
   font-size:14px;
-  line-height: 0.2;
+  line-height: 0.5;
 }

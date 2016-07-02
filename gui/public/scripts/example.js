@@ -1,19 +1,7 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only. Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 var Comment = React.createClass({
-  rawMarkup: function() {
+  rawMarkup: function(s) {
     var md = new Remarkable();
-    var rawMarkup = md.render(this.props.children.toString());
+    var rawMarkup = md.render(s);
     return { __html: rawMarkup };
   },
 
@@ -29,8 +17,12 @@ var Comment = React.createClass({
     return (
       <div className="comment">
         <span
-          dangerouslySetInnerHTML={this.rawMarkup()}
-          style={{color:color}}
+          dangerouslySetInnerHTML={this.rawMarkup(this.props.children.toString())}
+          style={{color:color, display:'inline-block'}}
+        />
+        <span
+          dangerouslySetInnerHTML={this.rawMarkup(this.props.spaced)}
+          style={{display: 'inline-block', paddingLeft:'30px'}}
         />
       </div>
     );
@@ -66,6 +58,7 @@ var CommentBox = React.createClass({
       type: 'POST',
       data: comment,
       success: function(data) {
+        console.log(data);
         this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
@@ -84,9 +77,9 @@ var CommentBox = React.createClass({
   render: function() {
     return (
       <div className="commentBox">
-        <h4 className="title">grbge word detctr</h4>
+        <h4 className="title">w0rdplay</h4>
         <div className="commentForm">
-          <CommentForm url="/api/classify_word/" onCommentSubmit={this.handleCommentSubmit} />
+          <CommentForm url="/api/analyze_word/" onCommentSubmit={this.handleCommentSubmit} />
         </div>
         <div>
           <div>
@@ -184,7 +177,7 @@ var CommentList = React.createClass({
   render: function() {
     var commentNodes = this.props.data.map(function(comment) {
       return (
-        <Comment key={comment.id} is_good={comment.is_good}>
+        <Comment key={comment.id} is_good={comment.is_good} spaced={comment.spaced}>
           {comment.text}
         </Comment>
       );

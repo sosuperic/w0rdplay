@@ -11,13 +11,15 @@ app.add_url_rule('/', 'root', lambda: app.send_static_file('index.html'))
 import uuid
 import csv
 import pickle
-import garbage_detector
 import random
 
+import garbage_detector
+import string_splitter
 
 SPOKEN_WORDS_PATH = 'data/logs/spoken_words_all.csv'
 
 gd = garbage_detector.GarbageDetector()
+ss = string_splitter.StringSplitter()
 
 session_words = []
 
@@ -67,6 +69,7 @@ def submit_word_handler():
         new_word = request.form.to_dict()
         new_word['id'] = int(time.time() * 1000)
         new_word['is_good'] = gd.is_good(new_word['text'])
+        new_word['spaced'] = ss.infer_spaces(new_word['text'])
 
         session_words.append(new_word)
         all_words.append(new_word)
@@ -83,12 +86,13 @@ def submit_word_handler():
         }
     )
 
-@app.route('/api/classify_word/<s>')
-def classify_string(s):
+@app.route('/api/analyze_word/<s>')
+def analyze_string(s):
     is_good = gd.is_good(s)
+    spaced = ss.infer_spaces(s)
 
     return Response(
-        json.dumps([is_good]),
+        json.dumps([is_good, spaced]),
         mimetype='application/json',
         headers={
             'Cache-Control': 'no-cache',
