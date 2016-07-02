@@ -32,8 +32,8 @@ def sb_initialize_words():
     words = set()
     f = open(SPOKEN_WORDS_PATH, 'rb')
     for line in iter(f):
-        if line.endswith('speak\n'):
-            word = line.split('|')[1].strip('\n')
+        if 'speak' in line:
+            word = line.split('|')[0]
         else:
             word = line.strip('\n')
         words.add(word)
