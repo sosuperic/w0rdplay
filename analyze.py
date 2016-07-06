@@ -5,7 +5,7 @@ import pickle
 
 d = enchant.Dict("en_US")
 
-spoken_words = pickle.load(open('spoken_words.pkl', 'rb'))
+spoken_words = pickle.load(open('data/logs/spoken_words.pkl', 'rb'))
 real, not_real = [], []
 for path, log in spoken_words:
 	if 'speak' in log:
