@@ -250,7 +250,7 @@ var CommentForm = React.createClass({
       <form className="commentForm" onSubmit={this.handleSubmit}>
         <input
           type="text"
-          placeholder="Say something..."
+          placeholder="Type something..."
           value={this.state.text}
           onChange={this.handleTextChange}
           style={{color: this.state.color}}
