@@ -17,13 +17,15 @@ The classification happens dynamically as you type. String splitting into words 
 
 You can also click on a list of words from Speechblocks log data, which are all the words that were pronounced during the pilot study.
 
+Get python packages using requirements.txt
+
 Download word frequency list by running:
 ```
 ./dl_wiki_subset.sh
 ```
 Start server by running:
 ```
-python gui/server.py
+PYTHONPATH=. python gui/server.py
 ```
 Visit:
 ```
