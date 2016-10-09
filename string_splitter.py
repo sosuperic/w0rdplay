@@ -64,9 +64,16 @@ class StringSplitter:
         word_costs = defaultdict(lambda: self.oov_cost, word_costs)
         return word_costs
 
-    def infer_spaces(self, s):
+    def infer_spaces(self, s, keywords=[]):
         """
         Return string with spaces inserted
+
+        Input
+        -----
+        s: str to split
+        keywords: list of preferred words that should be their own split
+            - Example: keywords = ['ball']
+            - ballerina -> 'ball' 'erina' instead of 'ballerina'
 
         Dynamic Programming Formula
         ---------------------------
@@ -86,6 +93,12 @@ class StringSplitter:
                 # This corresponds to a split_index of 0
             best_split_cost, best_split_index = float('inf'), -1
             for j in range(i+1):                                    # j is index at which to insert space before
+
+                # If either substring is in keywords, then definitely split
+                # TODO: I'm not sure what the best_split_cost should be exactly 
+                if (s[0:j] in keywords) or (s[j:i+1] in keywords):
+                    best_split_index = j
+
                 split_cost = costs[j] + self.word_costs[s[j:i+1]]   # Use memoized costs
                 if split_cost < best_split_cost:
                     best_split_cost = split_cost
